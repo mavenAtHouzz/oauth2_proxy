@@ -495,8 +495,10 @@ func (p *OAuthProxy) OAuthCallback(rw http.ResponseWriter, req *http.Request) {
 			return
 		}
 		req.Header["X-Authenticated-User"] = []string{session.User}
+		rw.Header().Set("X-Authenticated-User", session.User)
 		if session.Email != "" {
 			req.Header["X-Authenticated-Email"] = []string{session.Email}
+			rw.Header().Set("X-Authenticated-Email", session.Email)
 		}
 		http.Redirect(rw, req, redirect, 302)
 	} else {
