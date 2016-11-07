@@ -494,12 +494,6 @@ func (p *OAuthProxy) OAuthCallback(rw http.ResponseWriter, req *http.Request) {
 			p.ErrorPage(rw, 500, "Internal Error", "Internal Error")
 			return
 		}
-		req.Header["X-Authenticated-User"] = []string{session.User}
-		rw.Header().Set("X-Authenticated-User", session.User)
-		if session.Email != "" {
-			req.Header["X-Authenticated-Email"] = []string{session.Email}
-			rw.Header().Set("X-Authenticated-Email", session.Email)
-		}
 		http.Redirect(rw, req, redirect, 302)
 	} else {
 		log.Printf("%s Permission Denied: %q is unauthorized", remoteAddr, session.Email)
@@ -608,8 +602,8 @@ func (p *OAuthProxy) Authenticate(rw http.ResponseWriter, req *http.Request) int
 			req.Header["X-Forwarded-Email"] = []string{session.Email}
 		}
 	}
-	rw.Header().Set("X-Authenticated-User", session.User)
-	rw.Header().Set("X-Authenticated-User", session.Email)
+	rw.Header().Set("X-Auth-User", session.User)
+	rw.Header().Set("X-Auth-Email", session.Email)
 	if p.PassAccessToken && session.AccessToken != "" {
 		req.Header["X-Forwarded-Access-Token"] = []string{session.AccessToken}
 	}
