@@ -598,12 +598,12 @@ func (p *OAuthProxy) Authenticate(rw http.ResponseWriter, req *http.Request) int
 	if p.PassBasicAuth {
 		req.SetBasicAuth(session.User, p.BasicAuthPassword)
 		req.Header["X-Forwarded-User"] = []string{session.User}
+		rw.Header().Set("X-Auth-User", session.User)
 		if session.Email != "" {
 			req.Header["X-Forwarded-Email"] = []string{session.Email}
+			rw.Header().Set("X-Auth-Email", session.Email)
 		}
 	}
-	rw.Header().Set("X-Auth-User", session.User)
-	rw.Header().Set("X-Auth-Email", session.Email)
 	if p.PassAccessToken && session.AccessToken != "" {
 		req.Header["X-Forwarded-Access-Token"] = []string{session.AccessToken}
 		rw.Header().Set("X-Auth-Access-Token", session.AccessToken)
